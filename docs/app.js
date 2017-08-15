@@ -560,7 +560,7 @@ function setUp () {
 
     // Set up toggling of visible password
     $password.showTypingArea.show();
-    $password.mainLabel.css('margin-bottom','-35px');
+    $password.mainLabel.css('margin-bottom','-30px');
     $password.showTypingSwitch.click(togglePasswordVisibility);
 }
 
