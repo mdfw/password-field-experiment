@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>Password field example - Mark Williams</title>
+    <meta name="author" content="mark@mdfw.me"/>
+    <meta name="description" content="A demo of a password field utilizing a number of suggestions on best password management."/>
+    <link href="http://opensource.org/licenses/mit-license" rel="license"/>
+    <link href="https://fonts.googleapis.com/css?family=Sedgwick+Ave+Display" rel="stylesheet">
+    <!-- This really should be a separate stylesheet, but for an example project, we are going to leave it. -->
+    <style type="text/css" media="screen">
+      body{background:black;font-size:120%;font-family:"Helvetica",Helvetica,sans-serif;}
+      /*hgroup{text-align:center;margin-bottom: 2em;}*/
+      .logo-holder {text-align: center}
+      h1{color:#222;margin-top:0.1em;margin-bottom:0.5em;font-family: 'Sedgwick Ave Display', cursive;text-align: center;font-size:3.5em;}
+      .why-is-this-here {margin-left: 5%;margin-right: 5%;padding: 10px;border: 3px solid #00A26F;border-radius: 10px;font-size: 75%; margin-bottom: 20px;margin-top: -30px;}
+      .why-is-this-here ul {padding-left: 5%}
+      p,label, span{text-shadow:1px 1px 1px #f2f2f2;}
+      label{color:#444;display:block;font-variant:small-caps;text-transform:lowercase;}
+      #requirements-area {border: none; padding-left: 0px;}
+      .advisorsList {margin-bottom: 5px; margin-top: 5px; padding-left: 10px;border-left: 3px solid rgba(112, 128, 144, 0.26);}
+      .advisorsList li{list-style: none;padding: 0; font-size:smaller; padding-bottom: 3px;}
+      .advisorsList li img {vertical-align:middle; padding-bottom: 3px;}
+      .advisorsList .adviseWait {color: slategray}
+      .advisorsList .advisePass {color: darkgreen}
+      .advisorsList .adviseFail {color: firebrick}
+      .advisorsList .adviseStart {color: black}
+      .offPage {position: absolute;bottom: 100%;right: 100%;}
+      #show-typing-area {margin-left: 5px;margin-bottom: 5px;font-size: smaller; float: right; font-variant:small-caps;text-transform:lowercase;}
+      #show-typing-switch {padding: 5px; background-color: white; border: 1px solid slategray; color: #000; border-radius: 4px; font-size: 14px; text-decoration: none; font-family:"Helvetica",Helvetica,sans-serif; font-variant:small-caps;text-transform:lowercase;}
+      [role="switch"][aria-checked="true"] :first-child, 
+      [role="switch"][aria-checked="false"] :last-child {text-shadow: none; background: darkslategray; border-radius: 4px; color: white;padding: 4px; padding-left: 6px; padding-right: 6px;font-variant:small-caps;text-transform:lowercase;}
+      #continue-button {padding: 10px 20px 10px; width: 100%;font-family: 'Sedgwick Ave Display', cursive; font-size: 140%; background: rgba(239, 82, 41, 1);border-width: 1px;border-style: none;}
+      #continue-button:disabled {color: slategray; background: rgba(239, 82, 41, 0.5)}
+      p {font-size:77%;}
+      input{width: 100%;font-size:1.5em;margin-bottom:0.75em;}
+      a {color:#444;}
+      a:hover {background:#ddd;}
+      a:visited {color:#565656;}
+      a:active {color:#fff;background:#444;text-shadow:none;}
+      hr{border:0px transparent solid;border-top:1px #fdfdfd solid;border-bottom:1px #ddd solid;margin:20px 0 30px 0;}
+      .container, .footer {max-width:480px;}
+      .container {padding:1em;margin:2em auto;background:#fff;border-radius:11px;box-shadow:0px 2px 5px #888;}
+      #created-message {text-align: center;padding: 30px;font-style: italic;}
+      footer {margin:0 auto;display:block;color:white;text-align:center;font-size:1em; width: 100%;}
+      footer p {display:block;line-height:1.5em;text-shadow:none}
+      footer a {color:white}
+      footer a:visited {color:white}
+    </style>
+
+</head>
+<body>
+    <div class="container">
+        <div class="logo-holder">
+            <img alt="Zephyrboard logo" src="img/zephyrlogo.svg" height="80">
+        </div>
+        <h1>Zehpyrboards</h1>
+        <div class="why-is-this-here">
+            This is an experiment in the user experience of password requirement areas incorporating:
+            <ul>
+                <li>Accessibility</li>
+                <li>Password visibility switching</li>
+                <li>Password best practice (by some definitions of best practice)</li>
+                <li>Bloom filters to prevent common passwords</li>
+            </ul>
+            For more information, see the <a href="https://github.com/mdfw/">readme</a>.
+        </div>
+        <form>
+            <label for="email-address">Email address</label>
+            <input type="text" name="email-address" id="email-address" maxlength="256" tabindex="1" />
+            <fieldset id="requirements-area">
+                <label>Password requirements</label>
+                <ul id="advisorsList" class="advisorsList">
+                    <li id="advisor8char" class="adviseStart"><img alt="" src="img/star.svg" height="18" width="18"> <span class="aText">At least 8 characters</span></li>
+                    <li id="advisor1upper" class="adviseStart"><img alt="" src="img/star.svg" height="18" width="18"> <span class="aText">One uppercase letter</span></li>
+                    <li id="advisor1lower" class="adviseStart"><img alt="" src="img/star.svg" height="18" width="18"> <span class="aText">One lowercase letter</span></li>
+                    <li id="advisor1number" class="adviseStart"><img alt="" src="img/star.svg" height="18" width="18"> <span class="aText">One number</span></li>
+                    <li id="advisor1symbol" class="adviseStart"><img alt="" src="img/star.svg" height="18" width="18"> <span class="aText">One symbol</span></li>
+                    <li id="advisor20char" class="advisePass" style="display: none"><img alt="Passed" src="img/checked.svg" height="18" width="18"> <span class="aText">At least 20 characters</span></li>
+                    <li id="advisorOver256" class="adviseFail" style="display: none"><img alt="Error" src="img/error.svg" height="18" width="18"> <span class="aText">Not over 256 characters</span></li>
+                    <li id="advisorCommonPassword" class="adviseStart"><img alt="" src="img/star.svg" height="18" width="18"> <span class="aText">Not a common password</span></li>
+                    <li id="advisorNotOurName" class="adviseStart"><img alt="" src="img/star.svg" height="18" width="18"> <span class="aText">Does not include the words 'zephyrboard' or 'hoverboard'</span></li>
+                </ul>
+            </fieldset>
+            <label for="main-password" id="main-password-label">Password</label>
+            <div id="show-typing-area" style="display:none">
+                <!-- https://inclusive-components.club/toggle-button/ -->
+                <span id="show-typing-label">Show typing </span> 
+                <button role="switch" aria-checked="false" aria-labelledby="show-typing-label" name="show-typing" id="show-typing-switch" tabindex="2">
+                    <span class="show-typing-inactive">on</span>
+                    <span class="show-typing-active">off</span>
+                </button>
+            </div>
+            <input type="password" name="main-password" id="main-password" maxlength="256" tabindex="3" aria-label="Main password." />
+            
+            <!-- Password - visible -->
+            <label for="visible-password"  id="visible-password-label" class="offPage" style="display:none">Password - visible</label>
+            <input type="text" name="visible-password" id="visible-password" maxlength="256" tabindex="3" spellcheck="false" style="display:none" />
+            
+            <!-- Password - confirmation -->
+            <div id="confirm-area">
+                <label for="confirm-password" id="confirm-password-label">Confirm password</label>
+                <ul id="advisorsListConfirm" class="advisorsList" aria-live="polite">
+                    <li id="advisorConfirmMatch" class="adviseStart" style="display:none"><img alt="" src="img/star.svg" height="18" width="18"> <span class="aText">Passwords need to match</span></li>
+                </ul>
+                <input type="password" name="confirm-password" id="confirm-password" maxlength="256" tabindex="4"/>
+            </div>
+            
+            <!-- Create button -->
+            <button name="Create" type="submit" value="create" id="continue-button">Continue</button>      
+            <div id="created-message" style="display:none">We would create a user account now.</div>     
+        </form>
+    </div>
+    <footer>
+      <p>Created by <a href="http://twitter.com/mdfw" title="@mdfw" rel="me">Mark Williams</a>, and released under the <a href="http://opensource.org/licenses/mit-license" rel="license">MIT License</a>.</p>
+      <p>Acknowledgements: <a href="https://thenounproject.com/raphaelbuquet/collection/ui-icons-squircle-shaped/?i=1126677">Checkbox</a>, <a href="https://thenounproject.com/raphaelbuquet/collection/ui-icons-squircle-shaped/?i=1126678">Checkbox (unchecked)</a>, and <a href="https://thenounproject.com/raphaelbuquet/collection/ui-icons-squircle-shaped/?oq=squircle&cidx=0&i=1126657">Warning</a> by Raphaël Buquet from the Noun Project, <a href="https://thenounproject.com/raphaelbuquet/collection/ui-icons-squircle-shaped/?oq=squircle&cidx=0&i=1126657">Warning</a> by Raphaël Buquet from the Noun Project. Logo includes <a href="https://thenounproject.com/search/?q=wings&i=1114094">wing</a> by Valeriy from the Noun Project and <a href="https://thenounproject.com/search/?q=hoverboard&i=249563">Skateboard</a> by anbileru adaleru from the Noun Project
+
+    </footer>
+
+    <script src="jquery/jquery-3.2.1.js"></script>
+    <script src="bloomfilter.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
+
+<!-- 
+
+Skateboard by anbileru adaleru from the Noun Project
+ -->
+ 
+ 
