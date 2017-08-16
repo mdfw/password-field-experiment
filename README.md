@@ -1,5 +1,5 @@
 # Client side password field experiment
-Using NIST, OWASP, NNGroup, bloomfilters to improve both security and user experience of password fields. Includes issues around accessibility of password requirement updates and 'show typing' implementations.
+Using NIST, OWASP, NNGroup, Bloom filters to improve both security and user experience of password fields. Includes issues around accessibility of password requirement updates and 'show typing' implementations.
 
 ---
 ## Try It
@@ -39,7 +39,7 @@ For our needs, we're going to mix and match to get something that's reasonably s
 * Cannot be a 'common password'
 * Cannot have the company name in the password
 
-## 'Common' passwords and Bloomfilters
+## 'Common' passwords and Bloom filters
 ### Background
 How do you test against a common password? Let's also stipulate that you want to prevent a round trip to the server. You could send a list of common passwords to the client in clear text, but that just doesn't seem like a good idea, especially since many of the password lists I've seen contain...let's call them "non-worksafe words".
 
