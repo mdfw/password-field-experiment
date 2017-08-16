@@ -1,5 +1,5 @@
 # Client side password field experiment
-Using NIST, OWASP, NNGroup, bloomfilters and other best practices to improve both security and user experience of password fields.
+Using NIST, OWASP, NNGroup, bloomfilters to improve both security and user experience of password fields. Includes issues around accessibility of password requirement updates and 'show typing' implementations.
 
 ---
 ## Try It
